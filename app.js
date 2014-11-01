@@ -13,25 +13,41 @@ var Alarm = require('./lib/alarm.js'),
     AlarmLog = require('./lib/alarmlog.js'),
     AfkBot = require('./lib/afkbot.js');
 
-// AfkBot.findAlarm('545507d5da40e4032637d378', function(err, alarm) {
-//   if (err || !alarm) { return new Error(err || 'no alarm found'); }
-//   else {
-//     AfkBot.createAlarmLog(alarm, 'motion detected', function(err, log) {
-//       if (err || !log) { return new Error(err); }
-//       else { console.log(log); }
-//     });
-//     AfkBot.shouldWeAlert(alarm, function(err, answer) {
-//       if (err || !answer) { return new Error(err); }
-//         else {
-//           AfkBot.alert(alarm, function(err, success) {
-//             if (err || !success) { return new Error(err); }
-//             else {
-//               console.log('you should have been alerted');
-//             }
-//           });
-//         }
-//     });
-//   }
+
+// var gpio = require("pi-gpio");
+//
+// var sensor = require("pi-pins").connect(18);
+//   sensor.mode('in');
+//
+//
+// sensor.on('rise', function () {
+//
+// })
+
+
+
+AfkBot.findAlarm('545507d5da40e4032637d378', function(err, alarm) {
+  if (err || !alarm) { throw new Error(err); }
+  else {
+    AfkBot.shouldWeAlert(alarm, function(err, answer) {
+      if (err) { return new Error(err); }
+        else if (answer) {
+          console.log(answer);
+          AfkBot.alert(alarm, function(err, success) {
+            if (err || !success) { throw new Error(err); }
+            else {
+              console.log('you should have been alerted');
+            }
+          });
+        }
+    });
+  }
+});
+
+//
+// AfkBot.createAlarmLog(alarm, 'motion detected', function(err, log) {
+//   if (err || !log) { return new Error(err); }
+//   else { console.log(log); }
 // });
 
 // AfkBot.createAlarm(function(err, alarm) {
