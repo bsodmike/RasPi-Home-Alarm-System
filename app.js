@@ -11,57 +11,21 @@ var routes = require('./routes/index');
 // user defined
 
 var Alarm = require('./lib/alarm.js'),
-    AlarmLog = require('./lib/alarmlog.js');
+    AlarmLog = require('./lib/alarmlog.js'),
+    methods = require('./lib/methods.js');
 
 
-function createAlarmLog(alarm, logInfo, callback) {// pass in alarm to get the id to add to the alarmlog
-  if (alarm) {
-    // console.log(typeof(alarm.id));
-    logInfo = logInfo ? logInfo : 'no info given'
+methods.findAlarm('54505b176ff6d6c188c225d9', function(err, alarm) {
+  console.log(err, alarm);
+  methods.shouldWeAlert(alarm, function(err, success) {
+    console.log(err, success);
+  })
+});
 
-    var log = new AlarmLog({
-      alarmId : alarm.id,
-      info : logInfo
-    });
-
-    log.save(function(err) {
-      if (err) throw (err)
-      else {
-        return callback(null, log)
-      }
-    });
-  }
-  else {
-    return callback(new Error('No alarm provided. Please pass in an alarm and try again'))
-  }
-}
-
-
-
-// query testing to make sure we have an alarm
-Alarm.findOne({}, function(err, alarm) {
-  if (err || !alarm) { console.log(err); }
-  else {
-    return createAlarmLog(alarm, 'motion detected', function(err, success) {
-      if (err || !success) { console.log(err); }
-      else {
-        console.log(success);
-      }
-    })
-  }
-})
-
-// console.log(x.id);
-
-// create a new Alarm
-// var afkbot = new Alarm({});
-//
-// afkbot.save(function(err) {
-//   if (err) { console.log(err); }
-//   else {
-//     console.log('success!', afkbot);
-//   }
+// methods.createAlarm(function(err, success) {
+//   console.log(err, success);
 // });
+
 
 
 // var shouldAlert = function() {
