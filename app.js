@@ -5,8 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+var Firebase = require('firebase'),
+    moment = require('moment');
 
+var routes = require('./routes/index');
 var api = require('./routes/api');
 
 var Alarm = require('./lib/alarm.js'),
@@ -14,48 +16,43 @@ var Alarm = require('./lib/alarm.js'),
     AfkBot = require('./lib/afkbot.js');
 
 
-// var gpio = require("pi-gpio");
-//
-// var sensor = require("pi-pins").connect(18);
-//   sensor.mode('in');
-//
-//
-// sensor.on('rise', function () {
-//
-// })
 
-
-
-AfkBot.findAlarm('545507d5da40e4032637d378', function(err, alarm) {
-  if (err || !alarm) { throw new Error(err); }
-  else {
-    AfkBot.shouldWeAlert(alarm, function(err, answer) {
-      if (err) { return new Error(err); }
-        else if (answer) {
-          console.log(answer);
-          AfkBot.alert(alarm, function(err, success) {
-            if (err || !success) { throw new Error(err); }
-            else {
-              console.log('you should have been alerted');
-            }
-          });
-        }
-    });
-  }
-});
-
-//
-// AfkBot.createAlarmLog(alarm, 'motion detected', function(err, log) {
-//   if (err || !log) { return new Error(err); }
-//   else { console.log(log); }
+// AfkBot.createAlarmLog(process.env.USERNAME, 'motion detected', function(err, success) {
+//   if (err) { throw new Error(err) }
+//   else { console.log('alarm log created successfully'); }
 // });
 
-// AfkBot.createAlarm(function(err, alarm) {
-//   console.log(err, alarm);
-//   AfkBot.createAlarmLog(alarm, 'motion detected', function(err, data) {
-//       console.log(err, data);
-//   })
+// AfkBot.createAlarm(process.env.USERNAME, function(err, success) {
+//   if (err) { throw new Error(err) }
+//   else { console.log('log created successfully'); }
 // });
+
+
+
+var gpio = require("pi-gpio");
+
+var sensor = require("pi-pins").connect(18);
+  sensor.mode('in');
+
+
+sensor.on('rise', function () {
+  AfkBot.shouldWeAlert(function(err, response) {
+    try {
+      if (response == true) {
+        AfkBot.alert(process.env.USERNAME, function(err, success) {
+          if (err) { throw new Error(err) }
+        });
+      }
+      else { console.log('too soon'); }
+    }
+    catch (e) {
+      if (e) { console.log(e); }
+    }
+  });
+
+})
+
+
 
 
 var app = express();
