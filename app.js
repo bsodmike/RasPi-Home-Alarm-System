@@ -39,10 +39,10 @@ sensor.on('rise', function () {
   AfkBot.shouldWeAlert(function(err, response) {
     try {
       if (response == true) {
-        AfkBot.alert(process.env.USERNAME, function(err, success) {
+        AfkBot.alert(function(err, success) {
           if (err) { throw new Error(err) }
           else {
-            AfkBot.createAlarmLog(user, 'motion detected', function(err, success) {
+            AfkBot.createAlarmLog(function(err, success) {
               if (err) { return callback(new Error(err)) }
               else {
                 console.log('alerted successfully');
