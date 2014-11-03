@@ -5,17 +5,20 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var Firebase = require('firebase'),
-    moment = require('moment');
-
 var routes = require('./routes/index');
 var api = require('./routes/api');
 
+var Firebase = require('firebase'),
+    moment = require('moment'),
+    gpio = require("pi-gpio"),
+    sensor = require("pi-pins").connect(18);
+
+sensor.mode('in');
+
+// user defined
 var Alarm = require('./lib/alarm.js'),
     AlarmLog = require('./lib/alarmlog.js'),
     AfkBot = require('./lib/afkbot.js');
-
-
 
 // AfkBot.createAlarmLog(process.env.USERNAME, 'motion detected', function(err, success) {
 //   if (err) { throw new Error(err) }
@@ -26,43 +29,6 @@ var Alarm = require('./lib/alarm.js'),
 //   if (err) { throw new Error(err) }
 //   else { console.log('log created successfully'); }
 // });
-
-
-
-var gpio = require("pi-gpio");
-
-var sensor = require("pi-pins").connect(18);
-  sensor.mode('in');
-
-
-sensor.on('rise', function () {
-  AfkBot.shouldWeAlert(function(err, response) {
-    try {
-      if (response == true) {
-        AfkBot.alert(function(err, success) {
-          if (err) { throw new Error(err) }
-          else {
-            AfkBot.createAlarmLog(function(err, success) {
-              if (err) { return callback(new Error(err)) }
-              else {
-                console.log('alerted successfully');
-
-              }
-            });
-            }
-        });
-      }
-      else { console.log('too soon'); }
-    }
-    catch (e) {
-      if (e) { console.log(e); }
-    }
-  });
-
-})
-
-
-
 
 var app = express();
 
@@ -111,6 +77,45 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+
+
+
+sensor.on('rise', function () {
+  // check if we're home or away
+  // check if we should alert if away
+  // alert and create log if so
+  AfkBot.homeOrAway(function(err, state) {
+    if (err || !state) { throw new Error(err) }
+    else if (state == 'home') {
+      return;
+    }
+    else if (state == 'away') {
+      AfkBot.shouldWeAlert(function(err, response) {
+        try {
+          if (response == true) {
+            AfkBot.alert(function(err, success) {
+              if (err) { throw new Error(err) }
+              else {
+                AfkBot.createAlarmLog(function(err, success) {
+                  if (err) { throw new Error(err) }
+                  else {
+                    console.log('alerted successfully');
+
+                  }
+                });
+                }
+            });
+          }
+          else { console.log('too soon'); }
+        }
+        catch (e) {
+          if (e) { console.log(e); }
+        }
+      });
+    }
+  })
+})
+
 
 
 module.exports = app;

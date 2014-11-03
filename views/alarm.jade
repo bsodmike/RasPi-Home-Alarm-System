@@ -1,8 +1,4 @@
 extends layout
 
 block content
-  p #{alarm}
-  if alarm.armed == true
-    a(href="/api/#{alarm._id}/disarm") Disarm
-  else
-    a(href="/api/#{alarm._id}/arm") Arm
+  p #{state}
