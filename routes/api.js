@@ -23,7 +23,6 @@ router.get('/arm', function(req, res) {
   }
 });
 
-
 router.get('/disarm', function(req, res) {
   if (req.query.passcode) {
     if (req.query.passcode == process.env.ALARM_PASSCODE) {
