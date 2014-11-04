@@ -10,19 +10,14 @@ router.get('/arm', function(req, res) {
       AfkBot.arm(function(err, success) {
         if (err) { res.send(500) }
         else {
-          res.render('alarm', { state: 'home' })
+          res.render('alarm', { state: 'away' })
         }
       })
     }
-    else {
-      res.send(504)
-    }
+    else { res.send(504) }
   }
-  else {
-    res.send(504)
-  }
+  else { res.send(504) }
 });
-
 
 router.get('/disarm', function(req, res) {
   if (req.query.passcode) {
@@ -34,13 +29,9 @@ router.get('/disarm', function(req, res) {
         }
       })
     }
-    else {
-      res.send(504)
-    }
+    else { res.send(504) }
   }
-  else {
-    res.send(504)
-  }
+  else { res.send(504) }
 });
 
 module.exports = router;
