@@ -39,29 +39,27 @@ sensor.on('rise', function () {
   // check if we're home or away
     // if away: check if we should alert
     // if so: alert and create log
-  if (state == 'away') {
-    AfkBot.shouldWeAlert(function(err, response) {
-      try {
-        if (response == true) {
-          AfkBot.alert(function(err, success) {
-            if (err) { throw new Error(err) }
-            else {
-              AfkBot.createAlarmLog(function(err, success) {
-                if (err) { throw new Error(err) }
-                else {
-                  console.log('alerted successfully');
-                }
-              });
-            }
-          });
-        }
-        else { console.log('too soon to alert'); }
+  AfkBot.shouldWeAlert(function(err, response) {
+    try {
+      if (response == true) {
+        AfkBot.alert(function(err, success) {
+          if (err) { throw new Error(err) }
+          else {
+            AfkBot.createAlarmLog(function(err, success) {
+              if (err) { throw new Error(err) }
+              else {
+                console.log('alerted successfully');
+              }
+            });
+          }
+        });
       }
-      catch (e) {
-        if (e) { console.log(e); }
-      }
-    });
-  }
+      else { console.log('too soon to alert'); }
+    }
+    catch (e) {
+      console.log(e)
+    }
+  });
 })
 
 
