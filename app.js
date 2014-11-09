@@ -1,3 +1,4 @@
+var dotenv = require('dotenv').load();
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -20,18 +21,7 @@ var Alarm = require('./lib/alarm.js'),
     AlarmLog = require('./lib/alarmlog.js'),
     AfkBot = require('./lib/afkbot.js');
 
-// AfkBot.createAlarmLog(process.env.USERNAME, 'motion detected', function(err, success) {
-//   if (err) { throw new Error(err) }
-//   else { console.log('alarm log created successfully'); }
-// });
-
-// AfkBot.createAlarm(process.env.USERNAME, function(err, success) {
-//   if (err) { throw new Error(err) }
-//   else { console.log('log created successfully'); }
-// });
-
 var app = express();
-
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -53,16 +43,14 @@ app.use(function(req, res, next) {
 
 
 sensor.on('rise', function () {
-  // check if we're home or away
-  // if away: check if we should alert
-    // if yes: alert and create log
-  AfkBot.shouldWeAlert(function(err, response) {
+
+  AfkBot.shouldAlert(function(err, response) {
     try {
-      if (response == true) {
+      if (response === true) {
         AfkBot.alert(function(err, success) {
           if (err) { throw new Error(err) }
           else {
-            AfkBot.createAlarmLog(function(err, success) {
+            AfkBot.createAlarmLog({ type: 'motion', function(err, success) {
               if (err) { throw new Error(err) }
               else {
                 console.log('alerted successfully');
@@ -71,14 +59,11 @@ sensor.on('rise', function () {
           }
         });
       }
-      else { console.log('too soon to alert'); }
     }
     catch (e) {
       if (e) { console.log(e); }
     }
   });
 })
-
-
 
 module.exports = app;
