@@ -7,10 +7,10 @@ var AfkBot = require('../lib/afkbot.js');
 router.get('/arm', function(req, res) {
   if (req.query.passcode) {
     if (req.query.passcode == process.env.ALARM_PASSCODE) {
-      AfkBot.arm(function(err, success) {
+      AfkBot.changeState({ type: 'arm' }, function(err, success) {
         if (err) { res.send(500) }
         else {
-          res.render('alarm', { state: 'home' })
+          res.render('alarm', { status: 'home' })
         }
       })
     }
@@ -26,10 +26,10 @@ router.get('/arm', function(req, res) {
 router.get('/disarm', function(req, res) {
   if (req.query.passcode) {
     if (req.query.passcode == process.env.ALARM_PASSCODE) {
-      AfkBot.disarm(function(err, success) {
+      AfkBot.changeState({ type: 'disarm' },function(err, success) {
         if (err) { res.send(500) }
         else {
-          res.render('alarm', { state: 'home' })
+          res.render('alarm', { status: 'home' })
         }
       })
     }

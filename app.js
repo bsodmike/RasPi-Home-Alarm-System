@@ -10,11 +10,9 @@ var routes = require('./routes/index');
 var api = require('./routes/api');
 
 var Firebase = require('firebase'),
-    moment = require('moment');
+    moment = require('moment'),
     gpio = require("pi-gpio"),
-    sensor = require("pi-pins").connect(18);
-
-sensor.mode('in');
+    motionSensor = require("pi-pins").connect(18).mode('in');
 
 // user defined
 var Alarm = require('./lib/alarm.js'),
@@ -42,15 +40,14 @@ app.use(function(req, res, next) {
 });
 
 
-sensor.on('rise', function () {
-
+motionSensor.on('rise', function () {
   AfkBot.shouldAlert(function(err, response) {
     try {
       if (response === true) {
         AfkBot.alert(function(err, success) {
           if (err) { throw new Error(err) }
           else {
-            AfkBot.createAlarmLog({ type: 'motion', function(err, success) {
+            AfkBot.createAlarmLog({ type: 'motion' }, function(err, success) {
               if (err) { throw new Error(err) }
               else {
                 console.log('alerted successfully');
