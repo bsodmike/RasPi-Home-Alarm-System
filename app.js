@@ -10,11 +10,11 @@ var routes = require('./routes/index');
 var api = require('./routes/api');
 
 var Firebase = require('firebase'),
-    moment = require('moment');
-//     gpio = require("pi-gpio"),
-//     motionSensor = require("pi-pins").connect(18);
-//
-// motionSensor.mode('in')
+    moment = require('moment'),
+    gpio = require("pi-gpio"),
+    motionSensor = require("pi-pins").connect(18);
+
+motionSensor.mode('in')
 
 // user defined
 var Alarm = require('./lib/alarm.js'),
