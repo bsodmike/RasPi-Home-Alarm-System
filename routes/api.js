@@ -12,6 +12,7 @@ router.get('/arm', function(req, res) {
         res.render('alarm', { status: 'away' })
       }
     })
+  }
   else { res.send(504) }
 });
 
@@ -23,6 +24,7 @@ router.get('/disarm', function(req, res) {
         res.render('alarm', { status: 'home' })
       }
     })
+  }
   else { res.send(504) }
 });
 
