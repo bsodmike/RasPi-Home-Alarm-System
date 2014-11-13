@@ -28,5 +28,18 @@ router.get('/disarm', function(req, res) {
   else { res.status(500).end(); }
 });
 
+router.get('/state', function(req, res) {
+  if (req.query.passcode && req.query.passcode == process.env.ALARM_PASSCODE) {
+    AfkBot.getState(function(err, armed) {
+      if (err) { res.send(500) }
+      else {
+        state = armed == false ? 'home' : away
+        res.json({state: state});
+      }
+    })
+  }
+  else { res.status(500).end(); }
+});
+
 
 module.exports = router;
