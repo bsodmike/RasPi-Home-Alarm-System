@@ -43,28 +43,26 @@ app.use(function(req, res, next) {
 
 
 motionSensor.on('rise', function () {
-  if (AfkBot.isAlarmArmed()) {
-    AfkBot.shouldAlert(function(err, response) {
-      try {
-        if (response === true) {
-          AfkBot.alert(function(err, success) {
-            if (err) { throw new Error(err) }
-            else {
-              AfkBot.createAlarmLog({ type: 'motion' }, function(err, success) {
-                if (err) { throw new Error(err) }
-                else {
-                  console.log('alerted successfully: ' + new Date());
-                }
-              });
-            }
-          });
-        }
+  AfkBot.shouldAlert(function(err, response) {
+    try {
+      if (response === true) {
+        AfkBot.alert(function(err, success) {
+          if (err) { throw new Error(err) }
+          else {
+            AfkBot.createAlarmLog({ type: 'motion' }, function(err, success) {
+              if (err) { throw new Error(err) }
+              else {
+                console.log('alerted successfully: ' + new Date());
+              }
+            });
+          }
+        });
       }
-      catch (e) {
-        if (e) { console.log(e); }
-      }
-    });
-  }
+    }
+    catch (e) {
+      if (e) { console.log(e); }
+    }
+  });
 })
 
 module.exports = app;
