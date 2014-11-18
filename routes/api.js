@@ -6,10 +6,15 @@ var AfkBot = require('../lib/afkbot.js');
 
 router.get('/arm', function(req, res) {
   if (req.query.passcode && req.query.passcode == process.env.ALARM_PASSCODE) {
-    AfkBot.changeState({ type: 'arm' },function(err, success) {
-      if (err) { res.statud(505).end() }
+    AfkBot.changeState('away', function(err, success) {
+      if (err) { res.status(500).end() }
       else {
-        res.status(200).end();
+        AfkBot.createAlarmLog({ logType: 'arm' }, function(err, success) {
+          if (err) { res.status(500).end() }
+          else {
+            res.status(200).end();
+          }
+        });
       }
     })
   }
@@ -18,14 +23,19 @@ router.get('/arm', function(req, res) {
 
 router.get('/disarm', function(req, res) {
   if (req.query.passcode && req.query.passcode == process.env.ALARM_PASSCODE) {
-    AfkBot.changeState({ type: 'disarm' },function(err, success) {
-      if (err) { res.send(500) }
+    AfkBot.changeState('home', function(err, success) {
+      if (err) { res.status(500).end() }
       else {
-        res.status(200).end();
+        AfkBot.createAlarmLog({ logType: 'disarm' }, function(err, success) {
+          if (err) { res.status(500).end() }
+          else {
+            res.status(200).end();
+          }
+        });
       }
     })
   }
-  else { res.status(500).end(); }
+  else { res.status(500).end() }
 });
 
 router.get('/state', function(req, res) {
@@ -33,8 +43,8 @@ router.get('/state', function(req, res) {
     AfkBot.getState(function(err, armed) {
       if (err) { res.send(500) }
       else {
-        state = armed == false ? 'home' : away
-        res.json({state: state});
+        state = armed == false ? 'home' : 'away'
+        res.json({ state: state });
       }
     })
   }

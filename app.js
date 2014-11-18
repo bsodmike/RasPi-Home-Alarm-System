@@ -41,11 +41,6 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-AfkBot.changeState('home', function(err, state) {
-  console.log(err, state);
-});
-
-
 
 motionSensor.on('rise', function () {
   AfkBot.shouldAlert(function(err, response) {
@@ -54,7 +49,7 @@ motionSensor.on('rise', function () {
         AfkBot.alert(function(err, success) {
           if (err) { throw new Error(err) }
           else {
-            AfkBot.createAlarmLog({ type: 'motion' }, function(err, success) {
+            AfkBot.createAlarmLog({ logType: 'motion' }, function(err, success) {
               if (err) { throw new Error(err) }
               else {
                 console.log('alerted successfully: ' + new Date());
