@@ -10,9 +10,9 @@ var routes = require('./routes/index');
 var api = require('./routes/api');
 
 var Firebase = require('firebase'),
-    moment = require('moment'),
-    gpio = require("pi-gpio"),
-    motionSensor = require("pi-pins").connect(18);
+  moment = require('moment'),
+  gpio = require("pi-gpio"),
+  motionSensor = require("pi-pins").connect(18);
 
 motionSensor.mode('in')
 
@@ -41,9 +41,11 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-AfkBot.getState(function(err, state) {
+AfkBot.changeState('home', function(err, state) {
   console.log(err, state);
 });
+
+
 
 motionSensor.on('rise', function () {
   AfkBot.shouldAlert(function(err, response) {
