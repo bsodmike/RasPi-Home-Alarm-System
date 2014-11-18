@@ -42,6 +42,8 @@ app.use(function(req, res, next) {
 });
 
 
+
+
 motionSensor.on('rise', function () {
   AfkBot.shouldAlert(function(err, response) {
     try {
