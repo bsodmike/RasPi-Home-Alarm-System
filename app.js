@@ -14,7 +14,7 @@ var Firebase = require('firebase'),
   gpio = require("pi-gpio"),
   motionSensor = require("pi-pins").connect(18);
 
-motionSensor.mode('in')
+motionSensor.mode('in');
 
 // user defined
 var Alarm = require('./lib/alarm.js'),
@@ -39,11 +39,6 @@ app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
-});
-
-
-AfkBot.shouldAlert(function(err, resp) {
-  console.log(err, resp)
 });
 
 
