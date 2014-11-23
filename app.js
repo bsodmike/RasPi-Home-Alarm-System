@@ -41,8 +41,11 @@ app.use(function(req, res, next) {
     next(err);
 });
 
+var HouseLights = require('./lib/houselights.js')
 
-
+// houseLights.hitTheLights()
+// houseLights.letThereBeLight()
+// houseLights.nightLight()
 
 motionSensor.on('rise', function () {
   AfkBot.shouldAlert(function(err, response) {
@@ -59,6 +62,9 @@ motionSensor.on('rise', function () {
             });
           }
         });
+      }
+      else {
+        HouseLights.nightLight()
       }
     }
     catch (e) {
