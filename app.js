@@ -44,9 +44,19 @@ app.use(function(req, res, next) {
 
 var HouseLights = require('./lib/houselights.js');
 
+function nightLight(lightState) {
+  var on = lightState.toLowerCase() == 'on' ? true : false
+  if (on) {
+    HouseLights.nightlight('on')
+    nightlight.on = true;
+  } else {
+    HouseLights.nightlight('off')
+    nightlight.on = false;
+  }
+}
+
 var nightlight = {
-  on: false,
-  onAt: null
+  on: false
 }
 
 motionSensor.on('rise', function () {
@@ -67,9 +77,8 @@ motionSensor.on('rise', function () {
       }
       else if (!nightlight.on) {
         nightlight.on = true;
-        nightlight.onAt = new Date().toISOString();
         HouseLights.nightlight('on')
-        console.log('nightlight on');
+        setTimeout(nightLight('off'), 400000)
       }
     }
     catch (e) {
