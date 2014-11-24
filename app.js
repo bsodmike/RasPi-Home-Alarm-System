@@ -60,6 +60,7 @@ var nightlight = {
 }
 
 motionSensor.on('rise', function () {
+  nightLight('on');
   AfkBot.shouldAlert(function(err, response) {
     try {
       if (response === true) {
@@ -75,27 +76,12 @@ motionSensor.on('rise', function () {
           }
         });
       }
-      else if (!nightlight.on) {
-        nightlight.on = true;
-        HouseLights.nightlight('on')
-        setTimeout(nightLight('off'), 400000)
-      }
-    }
+     }
     catch (e) {
       if (e) { console.log(e); }
     }
   });
-})
-
-
-motionSensor.on('fall', function() {
-  var nightlightInterval = moment().subtract(process.env.NIGHTLIGHT_INTERVAL, 'minutes')._d;
-  if (nightlight.on && nightlightInterval > nightlight.onAt) {
-    nightlight.on = false;
-    nightlight.onAt = null;
-    HouseLights.nightlight('off')
-    console.log('nightlight off');
-  }
+  setTimeout(nightLight('off'), 4000000);
 });
 
 module.exports = app;
