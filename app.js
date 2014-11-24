@@ -19,8 +19,7 @@ motionSensor.mode('in');
 // user defined
 var Alarm = require('./lib/alarm.js'),
     AlarmLog = require('./lib/alarmlog.js'),
-    AfkBot = require('./lib/afkbot.js'),
-    NightLight = require('./lib/nightlight.js');
+    AfkBot = require('./lib/afkbot.js');
 
 
 var app = express();
