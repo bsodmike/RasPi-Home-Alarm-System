@@ -65,7 +65,7 @@ motionSensor.on('rise', function () {
           }
         });
       }
-      else if (nightlight.off) {
+      else if (!nightlight.on) {
         nightlight.on = true;
         nightlight.onAt = new Date().toISOString();
         HouseLights.nightlight('on')
