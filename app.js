@@ -19,7 +19,9 @@ motionSensor.mode('in');
 // user defined
 var Alarm = require('./lib/alarm.js'),
     AlarmLog = require('./lib/alarmlog.js'),
-    AfkBot = require('./lib/afkbot.js');
+    AfkBot = require('./lib/afkbot.js'),
+    NightLight = require('./lib/nightlight.js');
+
 
 var app = express();
 
@@ -41,11 +43,12 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-var HouseLights = require('./lib/houselights.js')
+var HouseLights = require('./lib/houselights.js');
 
-// houseLights.hitTheLights()
-// houseLights.letThereBeLight()
-// houseLights.nightLight()
+var nightlight = {
+  on: false,
+  onAt: null
+}
 
 motionSensor.on('rise', function () {
   AfkBot.shouldAlert(function(err, response) {
@@ -63,8 +66,11 @@ motionSensor.on('rise', function () {
           }
         });
       }
-      else {
-        HouseLights.nightLight()
+      else if (nightlight.off) {
+        nightlight.on = true;
+        nightlight.onAt = new Date().toISOString();
+        HouseLights.nightlight('on')
+        console.log('nightlight on');
       }
     }
     catch (e) {
@@ -72,5 +78,16 @@ motionSensor.on('rise', function () {
     }
   });
 })
+
+
+motionSensor.on('fall', function() {
+  var nightlightInterval = moment().subtract(process.env.NIGHTLIGHT_INTERVAL, 'minutes')._d;
+  if (nightlight.on && nightlightInterval > nightlight.onAt) {
+    nightlight.on = false;
+    nightlight.onAt = null;
+    HouseLights.nightlight('off')
+    console.log('nightlight off');
+  }
+});
 
 module.exports = app;
