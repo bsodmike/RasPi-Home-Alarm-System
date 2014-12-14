@@ -1,0 +1,17 @@
+{
+  "name": "afkbot",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-pushover": "^0.2.2"
+  },
+  "devDependencies": {
+    "dotenv": "^0.4.0"
+  }
+}
